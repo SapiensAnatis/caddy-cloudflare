@@ -1,0 +1,31 @@
+name: Publish custom Caddy image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Work out Caddy version
+        id: derive-tag
+        run: >
+          echo "tag=$(
+            cat Dockerfile | 
+            grep "FROM caddy:[0-9].[0-9].[0-9]$" | 
+            awk -F: '{print $2}'
+          )" >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        run: |
+          IMAGE=ghcr.io/sapiensanatis/caddy-cloudflare:${{ steps.derive-tag.outputs.tag }}
+
+          docker build . --file Dockerfile --tag ${IMAGE}
+          docker push ${IMAGE}
