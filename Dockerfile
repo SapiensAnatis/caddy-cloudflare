@@ -1,6 +1,6 @@
-FROM caddy:2.11.2-builder AS builder
+FROM --platform=$BUILDPLATFORM caddy:2.11.2-builder AS builder
 
-RUN xcaddy build  --with github.com/caddy-dns/cloudflare
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} xcaddy build --with github.com/caddy-dns/cloudflare
 
 FROM caddy:2.11.2
 
