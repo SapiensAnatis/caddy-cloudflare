@@ -2,6 +2,6 @@ FROM --platform=$BUILDPLATFORM caddy:2.11.2-builder AS builder
 
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} xcaddy build --with github.com/caddy-dns/cloudflare
 
-FROM --platform=$BUILDPLATFORM caddy:2.11.2
+FROM caddy:2.11.2
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
