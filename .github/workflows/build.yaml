@@ -23,7 +23,7 @@ jobs:
         run: >
           echo "tag=$(
             cat Dockerfile | 
-            grep "FROM caddy:[0-9].[0-9].[0-9]$" | 
+            grep -E "FROM caddy:[0-9\.]+$" | 
             awk -F: '{print $2}'
           )" >> "$GITHUB_OUTPUT"
       - name: Build and push
